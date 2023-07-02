@@ -83,8 +83,8 @@ export default function Calendar() {
   };
 
   return (
-    <div>
-      <div className="button" style={{ marginLeft: "40%"}}>
+    <div className="main">
+      <div className="button">
         <button
           onClick={() => setModalOpen(true)}
           style={{

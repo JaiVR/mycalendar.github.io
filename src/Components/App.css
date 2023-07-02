@@ -47,20 +47,42 @@
   margin: 10px;
   text-align: right;
 }
-.modal-add-button,.modal-cancel-button{
+
+.modal-add-button,
+.modal-cancel-button {
   margin: 10%;
   border-radius: 4px;
-  background-color:rgba(0, 125, 220) ;
+  background-color: rgba(0, 125, 220);
   backdrop-filter: blur(20px);
   color: white;
   border: solid 1px;
   font-size: large;
   font-weight: 400;
 }
-.modal-title,.modal-start,.modal-end,.modal-allday{
+
+.modal-title,
+.modal-start,
+.modal-end,
+.modal-allday {
   padding: 10%;
   padding-top: 2%;
   padding-bottom: 2%;
   font-weight: 500;
   font-size: medium;
+}
+.main .button {
+  margin: auto;
+  width: 20%;
+}
+
+@media screen and (max-width: 480px) {
+  .main .button{
+    margin: auto;
+    width: 38%;
+    padding: 10px;
+  }
+  .App h1{
+    text-align: center;
+  }
+
 }
