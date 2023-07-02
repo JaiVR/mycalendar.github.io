@@ -3,9 +3,14 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-// import moment from "moment";
 import axios from "axios";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue } from "firebase/database";
 import AddEventModal from "./AddEventModal";
+import { firebaseConfig } from "./Firebase";
+
+initializeApp(firebaseConfig);
+const database = getDatabase();
 
 export default function Calendar() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -20,21 +25,37 @@ export default function Calendar() {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(
-        "https://public-holiday.p.rapidapi.com/2023/US",
-        {
-          headers: {
-            "X-RapidAPI-Key": "af1dbd93e5msh8dcd520cee8d5f6p1c3dd9jsnfdfe56ba53b9",
-            "X-RapidAPI-Host": "public-holiday.p.rapidapi.com",
-          },
-        }
-      );
-      const holidayEvents = response.data.map((holiday) => ({
-        title: holiday.name,
-        start: holiday.date,
-        allDay: true,
-      }));
-      setEvents(holidayEvents);
+      const eventsRef = ref(database, "events");
+      onValue(eventsRef, async (snapshot) => {
+        const firebaseEventsData = snapshot.val();
+        const firebaseEvents = firebaseEventsData
+          ? Object.entries(firebaseEventsData).map(([eventId, eventData]) => ({
+              id: eventId,
+              title: eventData.title,
+              start: eventData.start,
+              end: eventData.end,
+              allDay: eventData.allDay,
+            }))
+          : [];
+
+        const response = await axios.get(
+          "https://public-holiday.p.rapidapi.com/2023/US",
+          {
+            headers: {
+              "X-RapidAPI-Key": "af1dbd93e5msh8dcd520cee8d5f6p1c3dd9jsnfdfe56ba53b9",
+              "X-RapidAPI-Host": "public-holiday.p.rapidapi.com",
+            },
+          }
+        );
+        const holidayEvents = response.data.map((holiday) => ({
+          title: holiday.name,
+          start: holiday.date,
+          allDay: true,
+        }));
+
+        const mergedEvents = [...firebaseEvents, ...holidayEvents];
+        setEvents(mergedEvents);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -64,9 +85,21 @@ export default function Calendar() {
   return (
     <div>
       <div className="button" style={{ marginLeft: "40%"}}>
-        <button onClick={() => setModalOpen(true)}
-        style={{fontWeight:"800",fontSize:"large",padding:"10%",paddingTop:"2%",paddingBottom:"2%",borderRadius:"8px",color:"white",backgroundColor:"rgba(0, 125, 220)"}}
-        >Add event</button>
+        <button
+          onClick={() => setModalOpen(true)}
+          style={{
+            fontWeight: "800",
+            fontSize: "large",
+            padding: "10%",
+            paddingTop: "2%",
+            paddingBottom: "2%",
+            borderRadius: "8px",
+            color: "white",
+            backgroundColor: "rgba(0, 125, 220)",
+          }}
+        >
+          Add event
+        </button>
       </div>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
