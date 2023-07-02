@@ -76,13 +76,18 @@
 }
 
 @media screen and (max-width: 480px) {
-  .main .button{
-    margin: auto;
-    width: 38%;
-    padding: 10px;
-  }
-  .App h1{
+  .App h1 {
     text-align: center;
+    padding: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+  
+  .main .button {
+    margin: auto;
+    width: 31%;
+    padding: 10px;
+    
   }
 
 }

@@ -46,18 +46,18 @@ export default function Calendar() {
               "X-RapidAPI-Host": "public-holiday.p.rapidapi.com",
             },
           }
-        );
+        )
         const holidayEvents = response.data.map((holiday) => ({
           title: holiday.name,
           start: holiday.date,
           allDay: true,
-        }));
+        }))
 
-        const mergedEvents = [...firebaseEvents, ...holidayEvents];
-        setEvents(mergedEvents);
+        const mergedEvents = [...firebaseEvents, ...holidayEvents]
+        setEvents(mergedEvents)
       });
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   };
 
@@ -68,19 +68,19 @@ export default function Calendar() {
       start: event.start,
       end: event.end,
       allDay: event.allDay,
-    };
+    }
 
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
-    setModalOpen(false);
-  };
+    setEvents((prevEvents) => [...prevEvents, newEvent])
+    setModalOpen(false)
+  }
 
   useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(events));
-  }, [events]);
+    localStorage.setItem("events", JSON.stringify(events))
+  }, [events])
 
   const generateId = () => {
-    return Math.random().toString(36).substr(2, 9);
-  };
+    return Math.random().toString(36).substr(2, 9)
+  }
 
   return (
     <div className="main">
